@@ -1,0 +1,9 @@
+jQuery(document).ready(function() {
+
+    jQuery('#example').dataTable( {
+        "scrollX": true,
+        "data": dataSet,
+        "columns": [
+        ]
+    } );   
+} );
