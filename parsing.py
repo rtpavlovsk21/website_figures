@@ -4,6 +4,8 @@ import datetime;
 import matplotlib.pyplot as plt;
 #open the datafile and plotting tools
 header=[];
+#number of collumns containing non-data -1
+metacols = 2;
 
 def parse_time(date):
     if( '-' in date):
@@ -30,14 +32,14 @@ def create_barerror_plot(csv_file):
             tmp_list=[];
             name_lst.append(row[header[0]]);
             date_lst.append(parse_time(row[header[1]]));
-            for ind in range(2,len(row)):
+            for ind in range(metacols,len(row)):
                 tmp_list.append(float(row[header[ind]]));
             lst.append(tmp_list);
             
     #change in the datatype for conv.
     lst=np.asarray(lst);
     print lst,name_lst,date_lst;
-
+    
 
 create_barerror_plot('NonFukushima.csv');
 with open('NonFukushima.csv','rU') as csvfile:
