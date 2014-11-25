@@ -10,9 +10,7 @@ def parse_time(date):
         return '';
     lst=date.split('/');
     ret_lst=[];
-    print lst;
     for itm in lst:
-        print itm;
         ret_lst.append( int(itm) );
     return datetime.datetime(year=2000+ret_lst[2], month=ret_lst[0], day=ret_lst[1]);
     
@@ -36,7 +34,9 @@ def create_barerror_plot(csv_file):
             
     #change in the datatype for conv.
     lst=np.asarray(lst);
-    print lst,name_lst,date_lst;
+    for itm in range(0,len(name_lst)):
+        name_lst[itm]=name_lst[itm]+"\n"+str(date_lst[itm]);
+    print name_lst;
 
 
 create_barerror_plot('NonFukushima.csv');
