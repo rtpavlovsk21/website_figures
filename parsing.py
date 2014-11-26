@@ -58,6 +58,9 @@ def create_barerror_plot(csv_file,title):
             name_lst.append(row[header[0]]);
             date_lst.append(parse_time(row[header[1]]));
             for ind in range(metacols,len(row)):
+                if('N.D.' in row[header[ind]]):
+                    tmp_list.append(0);
+                    continue;
                 tmp_list.append(float(row[header[ind]]));
             lst.append(tmp_list);
             
