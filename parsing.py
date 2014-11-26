@@ -42,12 +42,12 @@ def unique_sample_names(sample_names):
         if(not name in ret):
             ret.append(name);
     return ret;
-def create_barerror_plot(csv_file):
+def create_barerror_plot(csv_file,title):
     lst=[];
     name_lst=[];
     date_lst=[];
     header=[];
-    with open('NonFukushima.csv','rU') as csvfile:
+    with open(csv_file,'rU') as csvfile:
         #read the first line
         parser=csv.reader(csvfile);
         header=parser.next();
@@ -78,12 +78,12 @@ def create_barerror_plot(csv_file):
         loop+=1;
     print legend_key;
     print data.shape, error.shape;
-    ax,fig=generate_barerror_logy(sample_names=name_lst,data=data,error=error,legend_key=legend_key,log=True);
+    ax,fig=generate_barerror_logy(sample_names=name_lst,data=data,error=error,legend_key=legend_key,title=title,log=True);
 
-def generate_barerror_logy(sample_names,data,error,legend_key,log=True):
+def generate_barerror_logy(sample_names,data,error,legend_key,title,log=True):
     num_samples=len(sample_names);
     
-    ind = np.arange(num_samples);
+    ind = np.arange(0.5,num_samples);
     width=0.15;
 
     fig,ax=plt.subplots();
@@ -96,12 +96,15 @@ def generate_barerror_logy(sample_names,data,error,legend_key,log=True):
     
     ax.set_xticks( ind+len(legend_key)/2*width );
     ax.set_xticklabels( sample_names );
-    ax.legend( [ a[0] for a in axs ], legend_key);
+    ax.legend( [ a[0] for a in axs ], legend_key,loc='upper left');
+    ax.set_title(title);
+    ax.set_ylabel(legend_key[0].split(' ')[1]);
     plt.gcf().subplots_adjust(bottom=0.15);
     plt.show();
     return ax,fig;
 
-create_barerror_plot('NonFukushima.csv');
+
+create_barerror_plot('NonFukushima.csv',title='Bay Area Environmental Sample Summary');
 with open('NonFukushima.csv','rU') as csvfile:
      #read the first line
      parser=csv.reader(csvfile);
