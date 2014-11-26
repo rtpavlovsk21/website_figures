@@ -35,10 +35,7 @@ def combine_measurements_with_same_name(sample_array,sample_names,sample_dates):
         u_sample_array.append(np.max(lst,axis=0));
         u_sample_names_ret.append(u_name+u_sample_dates);
 
-    print u_sample_names_ret;
-    return np.asarray(u_sample_array),u_sample_names_ret;
-        
-        
+    return np.asarray(u_sample_array),u_sample_names_ret;        
 def unique_sample_names(sample_names):
     ret=[];
     for name in sample_names:
@@ -67,11 +64,7 @@ def create_barerror_plot(csv_file):
     #change in the datatype for conv.
     lst=np.asarray(lst);
 
-    #making labels for the chart
-    #for itm in range(0,len(name_lst)):
-    #    if(date_lst[itm] == ''):
-    #        continue;
-    #    name_lst[itm]=name_lst[itm]+"\n"+date_lst[itm].strftime('%m-%d-%y');
+    #just reduce the data for plotting purposes
     lst,name_lst=combine_measurements_with_same_name(sample_array=lst,sample_names=name_lst,sample_dates=date_lst);
     data =np.zeros((len(name_lst),lst.shape[1]/2.));
     error=np.zeros((len(name_lst),lst.shape[1]/2.));
@@ -104,6 +97,7 @@ def generate_barerror_logy(sample_names,data,error,legend_key,log=True):
     ax.set_xticks( ind+len(legend_key)/2*width );
     ax.set_xticklabels( sample_names );
     ax.legend( [ a[0] for a in axs ], legend_key);
+    plt.gcf().subplots_adjust(bottom=0.15);
     plt.show();
     return ax,fig;
 
