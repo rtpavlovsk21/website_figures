@@ -89,11 +89,15 @@ def generate_barerror_logy(sample_names,data,error,legend_key,title,log=True):
     fig,ax=plt.subplots();
     
     axs=[];
+    mins=np.amin(data[np.nonzero(data)]);
     for samp in range(0,len(legend_key)):
         if( np.amin(data[:,samp])==0):
-            data[:,samp]+=np.amin(error[:,samp])/5;    
+            args=np.where(data[:,samp]==0);
+            data[args,samp]+=mins;    
         axs.append(ax.bar(left=ind+width*samp,height=tuple(data[:,samp]),width=width,color=colr_scheme[samp],yerr=tuple(error[:,samp]),ecolor=colr_scheme[samp],edgecolor="none",log=True));
     
+    ylims=ax.get_ylim();
+    ax.set_ylim([mins,ylims[1]]);
     ax.set_xticks( ind+len(legend_key)/2*width );
     ax.set_xticklabels( sample_names );
     ax.legend( [ a[0] for a in axs ], legend_key,loc='upper left');
