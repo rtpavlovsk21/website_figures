@@ -27,14 +27,15 @@ def combine_measurements_with_same_name(sample_array,sample_names,sample_dates):
         for name in sample_names:
             if(u_name == name):
                 lst.append(sample_array[row,:]);
-                if(sample_date==''):
+                if(sample_dates[row]==''):
                     continue;
-                u_sample_dates+=u_sample_dates+'\n'+sample_dates[row].strftime('%m-%d-%y');
+                u_sample_dates+='\n'+sample_dates[row].strftime('%m-%d-%y');
             row+=1;
         lst=np.asarray(lst);
-        u_sample_array.append(np.max(lst,axis=1));
-        u_sample_names_ret.append(u_name+'\n'+u_sample_dates);
+        u_sample_array.append(np.max(lst,axis=0));
+        u_sample_names_ret.append(u_name+u_sample_dates);
 
+    print u_sample_names_ret;
     return np.asarray(u_sample_array),u_sample_names_ret;
         
         
@@ -67,10 +68,11 @@ def create_barerror_plot(csv_file):
     lst=np.asarray(lst);
 
     #making labels for the chart
-    for itm in range(0,len(name_lst)):
-        if(date_lst[itm] == ''):
-            continue;
-        name_lst[itm]=name_lst[itm]+"\n"+date_lst[itm].strftime('%m-%d-%y');
+    #for itm in range(0,len(name_lst)):
+    #    if(date_lst[itm] == ''):
+    #        continue;
+    #    name_lst[itm]=name_lst[itm]+"\n"+date_lst[itm].strftime('%m-%d-%y');
+    lst,name_lst=combine_measurements_with_same_name(sample_array=lst,sample_names=name_lst,sample_dates=date_lst);
     data =np.zeros((len(name_lst),lst.shape[1]/2.));
     error=np.zeros((len(name_lst),lst.shape[1]/2.));
     legend_key=[];
