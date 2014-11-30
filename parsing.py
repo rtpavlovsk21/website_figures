@@ -9,7 +9,7 @@ metacols = 3;
 colr_scheme=['#00B2A5','#D9661F','#00B0DA','#FDB515', '#ED4E33','#2D637F','#9DAD33','#53626F','#EE1F60','#6C3302','#C2B9A7','#CFDD45','#003262'];
 colr_map={ 'k40':8, 'bi214':5, 'tl208':7, 'cs137':10, 'cs134':9 };
 iso_key=['k40','bi214','tl208','cs137','cs134'];
-colr_scheme=[ colr_scheme[colr_map[key]] for key in iso_key ];
+colr_scheme=np.asarray([ colr_scheme[colr_map[key]] for key in iso_key ]);
 
 def parse_time(date):
     if( '-' in date):
@@ -84,7 +84,6 @@ def create_barerror_plot(csv_file,title):
         error[:,loop]=lst[:,itm+1];
         loop+=1;
     print legend_key;
-    print data.shape, error.shape;
     ax,fig=generate_barerror_logy(sample_names=name_lst,data=data,error=error,legend_key=legend_key,title=title,log=True);
 
 def generate_barerror_logy(sample_names,data,error,legend_key,title,log=True):
@@ -98,13 +97,15 @@ def generate_barerror_logy(sample_names,data,error,legend_key,title,log=True):
     axs=[];
     mins=np.amin(data[np.nonzero(data)]);
     for samp in range(0,len(legend_key)):
+        args=np.zeros((0));
         if( np.amin(data[:,samp])==0):
             args=np.where(data[:,samp]==0);
-            data[args,samp]+=mins;    
-        axs.append(ax.bar(left=ind+width*samp,height=tuple(data[:,samp]),width=width,color=colr_scheme[samp],yerr=tuple(error[:,samp]),ecolor=colr_scheme[samp],edgecolor="none",log=True));
+            data[args,samp]+=1e-9;
+            draw_arrows(axes=ax,xlocs=(ind+width*float(samp+0.5))[args],ylocs=error[args,samp],colr=colr_scheme[samp]);
+        axs.append(ax.bar(left=ind+float(width)*float(samp),height=tuple(data[:,samp]),width=width,color=colr_scheme[samp],yerr=tuple(error[:,samp]),ecolor=colr_scheme[samp],edgecolor="none",log=True));
     
     ylims=ax.get_ylim();
-    ax.set_ylim([mins,ylims[1]]);
+    ax.set_ylim([mins/50,ylims[1]]);
     ax.set_xticks( ind+float(len(legend_key))/2.*width );
     ax.set_xticklabels( sample_names );
     ax.tick_params(axis='x',color='w');
@@ -115,6 +116,19 @@ def generate_barerror_logy(sample_names,data,error,legend_key,title,log=True):
     plt.show();
     return ax,fig;
 
+def draw_arrows(axes,xlocs,ylocs,colr):
+    num_els=len(xlocs);
+    if(num_els==0):
+        return;
+    if( len(ylocs.shape)>1 ):
+        ylocs=np.squeeze(ylocs,axis=(0,));
+    for ind in range(0,num_els):
+        #dy=10**np.ceil(np.log10(ylocs[ind]));
+        dy=1e-10;
+        axes.annotate("",xy=(xlocs[ind], ylocs[ind]-dy), xycoords='data',xytext=(xlocs[ind], ylocs[ind]), textcoords='data',arrowprops=dict(edgecolor=colr,facecolor=colr,arrowstyle="-|>") );
+        # has problems rendering with log scale. divergent
+        #axes.arrow(xlocs[ind],ylocs[ind],0,-dy,head_starts_at_zero=False,fc='k',width=5e-3);
+    return;
 
 create_barerror_plot('NonFukushima.csv',title='Bay Area Environmental Sample Summary');
 with open('NonFukushima.csv','rU') as csvfile:
