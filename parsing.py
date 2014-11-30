@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt;
 header=[];
 #number of collumns containing non-data -1
 metacols = 3;
-colr_scheme=['#00B2A5','#D9661F','#00B0DA','#FDB515','#ED4E33','#2D637F','#9DAD33','#53626F','#EE1F60','#6C3302','#C2B9A7','#CFDD45','#003262'];
+colr_scheme=['#00B2A5','#D9661F','#00B0DA','#FDB515', '#ED4E33','#2D637F','#9DAD33','#53626F','#EE1F60','#6C3302','#C2B9A7','#CFDD45','#003262'];
+colr_map={ 'k40':6, 'bi214':3, 'tl208':5, 'cs137':8, 'cs134':7 };
+colr_scheme=[ colr_scheme[colr_map[key]] for key in colr_map ];
 def parse_time(date):
     if( '-' in date):
         return '';
@@ -101,12 +103,13 @@ def generate_barerror_logy(sample_names,data,error,legend_key,title,log=True):
     
     ylims=ax.get_ylim();
     ax.set_ylim([mins,ylims[1]]);
-    ax.set_xticks( ind+len(legend_key)/2*width );
+    ax.set_xticks( ind+float(len(legend_key))/2.*width );
     ax.set_xticklabels( sample_names );
+    ax.tick_params(axis='x',color='w');
     ax.legend( [ a[0] for a in axs ], legend_key,loc='upper left');
     ax.set_title(title);
     ax.set_ylabel(legend_key[0].split(' ')[1]);
-    plt.gcf().subplots_adjust(bottom=0.15);
+    plt.gcf().subplots_adjust(bottom=0.15,left=0.05,right=0.95);
     plt.show();
     return ax,fig;
 
