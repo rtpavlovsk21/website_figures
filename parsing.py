@@ -7,8 +7,10 @@ header=[];
 #number of collumns containing non-data -1
 metacols = 3;
 colr_scheme=['#00B2A5','#D9661F','#00B0DA','#FDB515', '#ED4E33','#2D637F','#9DAD33','#53626F','#EE1F60','#6C3302','#C2B9A7','#CFDD45','#003262'];
-colr_map={ 'k40':6, 'bi214':3, 'tl208':5, 'cs137':8, 'cs134':7 };
-colr_scheme=[ colr_scheme[colr_map[key]] for key in colr_map ];
+colr_map={ 'k40':8, 'bi214':5, 'tl208':7, 'cs137':10, 'cs134':9 };
+iso_key=['k40','bi214','tl208','cs137','cs134'];
+colr_scheme=[ colr_scheme[colr_map[key]] for key in iso_key ];
+
 def parse_time(date):
     if( '-' in date):
         return '';
