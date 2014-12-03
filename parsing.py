@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt;
 #open the datafile and plotting tools
 header=[];
 #number of collumns containing non-data -1
-metacols = 3;
+metacols = 4;
 colr_scheme=['#00B2A5','#D9661F','#00B0DA','#FDB515', '#ED4E33','#2D637F','#9DAD33','#53626F','#EE1F60','#6C3302','#C2B9A7','#CFDD45','#003262'];
 colr_map={ 'k40':8, 'bi214':5, 'tl208':7, 'cs137':10, 'cs134':9 };
 iso_key=['k40','bi214','tl208','cs137','cs134'];
@@ -46,7 +46,7 @@ def unique_sample_names(sample_names):
         if(not name in ret):
             ret.append(name);
     return ret;
-def create_barerror_plot(csv_file,title):
+def create_barerror_plot(csv_file,title,log=True):
     lst=[];
     name_lst=[];
     date_lst=[];
@@ -84,13 +84,13 @@ def create_barerror_plot(csv_file,title):
         error[:,loop]=lst[:,itm+1];
         loop+=1;
     print legend_key;
-    ax,fig=generate_barerror_logy(sample_names=name_lst,data=data,error=error,legend_key=legend_key,title=title,log=True);
+    ax,fig=generate_barerror_logy(sample_names=name_lst,data=data,error=error,legend_key=legend_key,title=title,log=log);
 
 def generate_barerror_logy(sample_names,data,error,legend_key,title,log=True):
     num_samples=len(sample_names);
     
-    ind = np.arange(0.5,num_samples);
-    width=0.15;
+    ind = np.arange(0.5,num_samples,dtype=np.float64);
+    width=float(0.15);
 
     fig,ax=plt.subplots();
     
@@ -98,14 +98,18 @@ def generate_barerror_logy(sample_names,data,error,legend_key,title,log=True):
     mins=np.amin(data[np.nonzero(data)]);
     for samp in range(0,len(legend_key)):
         args=np.zeros((0));
+        left_edge=ind+float(width)*float(samp);
         if( np.amin(data[:,samp])==0):
             args=np.where(data[:,samp]==0);
             data[args,samp]+=1e-9;
-            draw_arrows(axes=ax,xlocs=(ind+width*float(samp+0.5))[args],ylocs=error[args,samp],colr=colr_scheme[samp]);
-        axs.append(ax.bar(left=ind+float(width)*float(samp),height=tuple(data[:,samp]),width=width,color=colr_scheme[samp],yerr=tuple(error[:,samp]),ecolor=colr_scheme[samp],edgecolor="none",log=True));
+            draw_arrows(axes=ax,xlocs=(left_edge+0.5*float(width))[args],ylocs=error[args,samp],colr=colr_scheme[samp]);
+        axs.append(ax.bar(left=left_edge,height=tuple(data[:,samp]),width=width,color=colr_scheme[samp],yerr=tuple(error[:,samp]),ecolor=colr_scheme[samp],edgecolor="none",log=log));
     
     ylims=ax.get_ylim();
-    ax.set_ylim([mins/50,ylims[1]]);
+    upper_mult=1;
+    if(log):
+        upper_mult=10;
+    ax.set_ylim([mins/10,upper_mult*ylims[1]]);
     ax.set_xticks( ind+float(len(legend_key))/2.*width );
     ax.set_xticklabels( sample_names );
     ax.tick_params(axis='x',color='w');
@@ -130,7 +134,8 @@ def draw_arrows(axes,xlocs,ylocs,colr):
         #axes.arrow(xlocs[ind],ylocs[ind],0,-dy,head_starts_at_zero=False,fc='k',width=5e-3);
     return;
 
-create_barerror_plot('NonFukushima.csv',title='Bay Area Environmental Sample Summary');
+create_barerror_plot('NonFukushima.csv',title='Reference Sample Summary',log=False);
+create_barerror_plot('Fukushima.csv',title='Bay Area Environmental Sample Summary',log=False);
 with open('NonFukushima.csv','rU') as csvfile:
      #read the first line
      parser=csv.reader(csvfile);
