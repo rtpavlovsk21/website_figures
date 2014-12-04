@@ -27,17 +27,26 @@ def combine_measurements_with_same_name(sample_array,sample_names,sample_dates):
     for u_name in u_sample_names:
         lst=[];
         row=0;
-        u_sample_dates='';
+        u_sample_dates=[];
         for name in sample_names:
             if(u_name == name):
                 lst.append(sample_array[row,:]);
                 if(sample_dates[row]==''):
                     continue;
-                u_sample_dates+='\n'+sample_dates[row].strftime('%m-%d-%y');
+                u_sample_dates.append(sample_dates[row]);
             row+=1;
+
+        u_sample_dates=np.sort(u_sample_dates);
+        if( len(u_sample_dates) ):
+            u_sample_dates_= '('+str(len(u_sample_dates))+')';
+        else:
+            u_sample_dates_= '('+str(1)+')';
+
+        for date in u_sample_dates[-3:]:
+            u_sample_dates_+="\n"+date.strftime('%m-%d-%y');
         lst=np.asarray(lst);
         u_sample_array.append(np.max(lst,axis=0));
-        u_sample_names_ret.append(u_name+u_sample_dates);
+        u_sample_names_ret.append(u_name+u_sample_dates_);
 
     return np.asarray(u_sample_array),u_sample_names_ret;        
 def unique_sample_names(sample_names):
@@ -134,8 +143,8 @@ def draw_arrows(axes,xlocs,ylocs,colr):
         #axes.arrow(xlocs[ind],ylocs[ind],0,-dy,head_starts_at_zero=False,fc='k',width=5e-3);
     return;
 
-create_barerror_plot('NonFukushima.csv',title='Reference Sample Summary',log=False);
-create_barerror_plot('Fukushima.csv',title='Bay Area Environmental Sample Summary',log=False);
+create_barerror_plot('NonFukushima.csv',title='Reference Sample Summary',log=True);
+create_barerror_plot('Fukushima.csv',title='Bay Area Environmental Sample Summary',log=True);
 with open('NonFukushima.csv','rU') as csvfile:
      #read the first line
      parser=csv.reader(csvfile);
