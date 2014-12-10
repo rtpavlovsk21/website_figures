@@ -126,7 +126,7 @@ def generate_barerror_logy(sample_names,data,error,legend_key,title,log=True):
     ax.annotate('', xy=(0.88,0.8999), xycoords='axes fraction', xytext=(0.88,0.9),textcoords='axes fraction',arrowprops=dict(edgecolor='k',facecolor='k',arrowstyle='-|>') );
     ax.annotate('Limit of Detection',xy=(0.888,0.905),xytext=(0.888,0.905),textcoords='axes fraction',ha='left',va='center');
     ax.set_title(title);
-    ax.set_ylabel(legend_key[0].split(' ')[1]);
+    ax.set_ylabel('Specific Activity '+legend_key[0].split(' ')[1]);
     plt.gcf().subplots_adjust(bottom=0.15,left=0.05,right=0.95);
     plt.show();
     return ax,fig;
